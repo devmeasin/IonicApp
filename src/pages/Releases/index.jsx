@@ -1,4 +1,5 @@
-import { IonButton, IonContent, IonList, IonPage, IonSpinner, IonText } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonList, IonPage, IonSpinner, IonText } from '@ionic/react';
+import { arrowUndoOutline } from 'ionicons/icons';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import ReleaseDesign from '../../components/ReleaseDesign';
@@ -7,9 +8,9 @@ import './style.css';
 
 const baseUrl = 'https://api.github.com/repos/mozilla/'
 
-const Releases : React.FC = () => {
+const Releases = () => {
 
-    const { name }:any = useParams();
+    const { name } = useParams();
     let history = useHistory();
 
     let [item, setItem] = useState([]);
@@ -24,6 +25,7 @@ const Releases : React.FC = () => {
                 setItem(data);
                 setLoader(false);
             })
+            .catch((err) => setLoader(false))
 
     } , []);
 
@@ -44,27 +46,28 @@ const Releases : React.FC = () => {
                             ) : 
                             (
                                 <>  
-                                <IonButton 
-                                  className = 'back-btn'
-                                  size="small"
-                                  onClick={() => history.goBack()}
-                                 >
-                                     Back
-                                </IonButton>
-                                <IonText>
-                                           <h4><strong>Repository Name: {name}</strong></h4>
-                                </IonText>
+                                    <IonButton 
+                                        className = 'back-btn'
+                                        size="small"
+                                        onClick={() => history.goBack()}
+                                    >
+                                        <IonIcon icon ={arrowUndoOutline}/>
+                                        Back
+                                    </IonButton>
+                                    <IonText>
+                                            <h4><strong>Repository Name: {name}</strong></h4>
+                                    </IonText>
 
-                                <IonList>
-                                   {
-                                       item.length !== 0 ?
-                                       item.map((data, ind) => <ReleaseDesign data = {data} key={ind}/>)
-                                       :
-                                       <IonText>
-                                           <h4><strong>Data Not Found! 😥!</strong></h4>
-                                       </IonText>  
-                                   }
-                                </IonList>
+                                    <IonList>
+                                    {
+                                        item.length !== 0 ?
+                                        item.map((data, ind) => <ReleaseDesign data = {data} key={ind}/>)
+                                        :
+                                        <IonText>
+                                            <h4><strong>Data Not Found! 😥!</strong></h4>
+                                        </IonText>  
+                                    }
+                                    </IonList>
 
                                 </>
                             )

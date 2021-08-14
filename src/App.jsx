@@ -19,7 +19,7 @@ import './theme/variables.css';
 // this line add only clear terminal and console
 console.clear();
 
-const App: React.FC = () => {
+const App = () => {
     return (
       <IonApp>
           <NavRouter/>

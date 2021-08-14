@@ -1,6 +1,6 @@
 import { IonHeader, IonTitle, IonToolbar } from '@ionic/react';
 
-const NavBar: React.FC<{title:any}> = ({title}) => {
+const NavBar = ({title}) => {
 
     return (
       

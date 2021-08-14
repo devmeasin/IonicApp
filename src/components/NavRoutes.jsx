@@ -5,7 +5,7 @@ import Home from '../pages/Home';
 import Releases from '../pages/Releases';
 
 
-const Router: React.FC = () => {
+const Router = () => {
 
     return (
         <IonReactRouter>
