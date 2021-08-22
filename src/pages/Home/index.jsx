@@ -14,20 +14,45 @@ const Home = () => {
     let [item, setItem] = useState([]);
     let [loader, setLoader] = useState(true);
     let [pagination , setPagination] = useState(1);
+    let [postPerPage] = useState(5);
+    let [perPage , setPerPage] = useState(100);
+    let [incrisePage , setIncrisePage] = useState(1)
+    let [firstLoad , setFirstLoad] = useState(true);
+
 
     useEffect(() => {
-        fetch(`${baseUrl}&page=${pagination}&per_page=5`)
+        fetch(`${baseUrl}&page=${incrisePage}&per_page=${perPage}`)
             .then((res) => res.json())
             .then((data) => {
-                setItem(data.items || []);
+                if(firstLoad) {
+                    setItem(data.items || []);
+                } else {
+                    item.push(...data.items);
+                    console.log('Hello True')
+                }
+                
                 setLoader(false);
             })
             .catch(err => {
-                
                 setLoader(false);
                 console.log(err)
             });
-    }, [pagination])
+    }, [perPage])
+
+
+
+    let indexOfLastPost = pagination * postPerPage;
+    let indexOfFirstPost = indexOfLastPost - postPerPage;
+    let currentPost = item.slice(indexOfFirstPost , indexOfLastPost)
+    console.log(indexOfFirstPost , indexOfLastPost , currentPost)
+
+
+    if(indexOfLastPost > perPage) {
+        setPerPage(perPage + 100);
+        setIncrisePage(incrisePage + 1)
+        setLoader(true);
+        setFirstLoad(false)
+    }
     
     let arr = Array(5).fill(0);
 
@@ -40,8 +65,8 @@ const Home = () => {
                         <IonContent className="ion-padding">
                             <IonList>
                                 {
-                                    item.length !== 0 ?
-                                    item.map((data, ind) => <GirdDesign data = {data} key={ind}/>)
+                                    currentPost.length !== 0 ?
+                                    currentPost.map((data, ind) => <GirdDesign data = {data} key={ind}/>)
                                     :
                                     <IonText>
                                         <h4><strong>Data Can't Load Something Wrong 😥❌!</strong></h4>
@@ -55,9 +80,9 @@ const Home = () => {
                                              <IonButton
                                                  shape="round"
                                                  expand="block"
+                                                 disabled = {pagination === 1 ? true : false}
                                                  onClick = {() => {
-                                                    setPagination(pagination - 1)
-                                                    setLoader(true)
+                                                    pagination > 1 ? setPagination(pagination - 1) : setPagination(1)
                                                 }}
                                               >
                                                   <IonIcon icon = {arrowBackSharp}/>
@@ -71,12 +96,12 @@ const Home = () => {
 
                                     <IonCol size="4">
                                              <IonButton 
+                                                 disabled = {indexOfLastPost === 1000 ? true : false}
                                                  color="tertiary"
                                                  shape="round" 
                                                  expand="block"
                                                  onClick = {() => {
                                                      setPagination(pagination + 1)
-                                                     setLoader(true)
                                                  }}
                                              >
                                                   <strong> Next</strong>
